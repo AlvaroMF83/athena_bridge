@@ -1,0 +1,18 @@
+{
+  "template": "ssh://git@globaldevtools.central-13.nextgen.igrupobbva:7999/prdss/datio-python-library-archetype.git",
+  "commit": "7c83096e279d365c1d9d1be7c06e045b500b6897",
+  "checkout": "v1.1.0",
+  "context": {
+    "cookiecutter": {
+      "project_name": "finn_athena_bridge",
+      "project_slug": "finn_athena_bridge",
+      "project_short_description": "Library Python project",
+      "version": "1.0.0",
+      "type": "MODULE",
+      "python_version": "py39",
+      "platform": "ada",
+      "_template": "ssh://git@globaldevtools.central-13.nextgen.igrupobbva:7999/prdss/datio-python-library-archetype.git"
+    }
+  },
+  "directory": "./"
+}

@@ -1,0 +1,30 @@
+[project]
+name = "athena_bridge"
+version = "0.0.1"
+authors = [
+  { name="Alvaro del Monte", email="author@example.com" },
+]
+description = "athena_bridge lets you run PySpark-style code using Python + AWS Athena, replicating PySpark’s syntax and functions. Write new code or migrate existing ones without EMR or Glue, leveraging Athena to cut costs and boost performance."
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+
+dependencies = [
+  "awswrangler>=3.10.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/AlvaroMF83/athena_bridge"
+Issues = "https://github.com/AlvaroMF83/athena_bridge/issues"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["athena_bridge*"]
