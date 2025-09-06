@@ -74,7 +74,7 @@ class DataFrameWriter:
                 "database": self._database or self.df.database,
                 "file_format": self._format,
                 "partitioned_by": self._partitioned_by,
-                "workgroup": "sandbox"
+                "workgroup": self.df.reader._workgroup
             }
 
             if self._format.lower() in ("csv", "textfile"):

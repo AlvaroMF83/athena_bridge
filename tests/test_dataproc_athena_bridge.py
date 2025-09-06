@@ -28,9 +28,10 @@ class TestDataprocAthenaBridge(unittest.TestCase):
         fake_ar = types.ModuleType("athenareader")
 
         class FakeAthenaReader:
-            def __init__(self, database_tmp, path_tmp):
+            def __init__(self, database_tmp, path_tmp, workgroup):
                 self.database_tmp = database_tmp
                 self.path_tmp = path_tmp
+                self.workgroup = workgroup
                 self.calls = []
                 self._options = {}
                 self.last_format = None
@@ -161,7 +162,7 @@ class TestDataprocAthenaBridge(unittest.TestCase):
     # ----------------- Tests de lectura -----------------
 
     def test_read_parquet_propagates_format_options_and_load(self):
-        dp = self.bridge.DataprocAthenaBridge(database_tmp="tmp_db", path_tmp="s3://tmp/")
+        dp = self.bridge.DataprocAthenaBridge(database_tmp="tmp_db", path_tmp="s3://tmp/", workgroup='sandbox')
     
         # mockeamos el método load para evitar cualquier acceso real a S3
         with patch.object(dp._reader, 'load', return_value="MOCK_DF") as mock_load:
@@ -174,7 +175,7 @@ class TestDataprocAthenaBridge(unittest.TestCase):
             self.assertEqual(dp._reader._options, {"header": True, "sep": ";"})
 
     def test_read_resets_options_between_calls(self):
-        dp = self.bridge.DataprocAthenaBridge("tmp_db", "s3://tmp/")
+        dp = self.bridge.DataprocAthenaBridge("tmp_db", "s3://tmp/", "sandbox")
     
         with patch.object(dp._reader, 'load', return_value="DF1") as mock_load_1:
             _ = dp.read().option("header", True).option("sep", ";").csv("s3://bucket/one.csv")
@@ -185,7 +186,7 @@ class TestDataprocAthenaBridge(unittest.TestCase):
             mock_load_2.assert_called_once_with("s3://bucket/two.csv")
 
     def test_table_calls_database_and_table(self):
-        dp = self.bridge.DataprocAthenaBridge("tmp_db", "s3://tmp/")
+        dp = self.bridge.DataprocAthenaBridge("tmp_db", "s3://tmp/", "sandbox")
     
         dp._reader.database = MagicMock(return_value=dp._reader)
         dp._reader.table = MagicMock(return_value="MOCK_DF")
@@ -197,7 +198,7 @@ class TestDataprocAthenaBridge(unittest.TestCase):
         dp._reader.table.assert_called_once_with("mi_tabla")
 
     def test_table_raises_without_dot(self):
-        dp = self.bridge.DataprocAthenaBridge("tmp_db", "s3://tmp/")
+        dp = self.bridge.DataprocAthenaBridge("tmp_db", "s3://tmp/", "sandbox")
         with self.assertRaises(ValueError):
             dp.read().table("solo_db_sin_punto")
 
@@ -232,7 +233,7 @@ class TestDataprocAthenaBridge(unittest.TestCase):
     # ----------------- Tests de escritura -----------------
 
     def test_write_parquet_propagates_to_dataframewriter(self):
-        dp = self.bridge.DataprocAthenaBridge("tmp_db", "s3://tmp/")
+        dp = self.bridge.DataprocAthenaBridge("tmp_db", "s3://tmp/", "sandbox")
         dummy_df = DummyDF()
     
         with patch("athena_bridge.dataframewriter.DataFrameWriter.save", return_value={"ok": True}) as mock_save:
@@ -249,7 +250,7 @@ class TestDataprocAthenaBridge(unittest.TestCase):
 
 
     def test_write_csv_options(self):
-        dp = self.bridge.DataprocAthenaBridge("tmp_db", "s3://tmp/")
+        dp = self.bridge.DataprocAthenaBridge("tmp_db", "s3://tmp/", "sandbox")
         dummy_df = DummyDF()
     
         with patch("athena_bridge.dataframewriter.DataFrameWriter.save", return_value={"ok": True, "fmt": "csv", "options": {"header": "true", "sep": ","}}):
@@ -267,7 +268,7 @@ class TestDataprocAthenaBridge(unittest.TestCase):
         self.assertEqual(res["options"]["sep"], ",")
 
     def test_write_saveAsTable(self):
-        dp = self.bridge.DataprocAthenaBridge("tmp_db", "s3://tmp/")
+        dp = self.bridge.DataprocAthenaBridge("tmp_db", "s3://tmp/", "sandbox")
         dummy_df = DummyDF()
     
         with patch("athena_bridge.dataframewriter.DataFrameWriter.saveAsTable", return_value={
@@ -295,7 +296,7 @@ class TestDataprocAthenaBridge(unittest.TestCase):
         self.assertEqual(res["options"]["x"], "y")
 
     def test_exit_delegates_to_reader_exit(self):
-        dp = self.bridge.DataprocAthenaBridge("tmp_db", "s3://tmp/")
+        dp = self.bridge.DataprocAthenaBridge("tmp_db", "s3://tmp/", "sandbox")
 
         # Espiamos la llamada a exit() del reader real
         dp._reader.exit = MagicMock(return_value=None)
@@ -310,7 +311,7 @@ class TestDataprocAthenaBridge(unittest.TestCase):
 
 
     def test_partitionBy_alias_if_present(self):
-        dp = self.bridge.DataprocAthenaBridge("tmp_db", "s3://tmp/")
+        dp = self.bridge.DataprocAthenaBridge("tmp_db", "s3://tmp/", "sandbox")
         writer = dp.write()
         if not hasattr(writer, "partitionBy"):
             self.skipTest("partitionBy alias no implementado en _DPWrite (usa partition_by).")

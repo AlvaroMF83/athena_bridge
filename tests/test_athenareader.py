@@ -7,11 +7,12 @@ import pandas as pd
 class TestAthenaReader(unittest.TestCase):
 
     def setUp(self):
-        self.reader = athenareader.AthenaReader(database_tmp="temp_db", path_tmp="s3://tmp-bucket/tmp-path")
+        self.reader = athenareader.AthenaReader(database_tmp="temp_db", path_tmp="s3://tmp-bucket/tmp-path", workgroup='sandbox')
 
     def test_initial_values(self):
         self.assertEqual(self.reader._format, "parquet")
         self.assertEqual(self.reader.database_tmp, "temp_db")
+        self.assertEqual(self.reader.workgroup, "sandbox")
         #self.assertEqual(self.reader.path_tmp, "s3://tmp-bucket/tmp-path")
         self.assertEqual(self.reader.data_scanned, 0)
 
@@ -68,7 +69,7 @@ class TestAthenaReader(unittest.TestCase):
             self.reader.load("s3://invalid/format")
             
     def setUp(self):
-        self.reader = athenareader.AthenaReader(database_tmp="temp_db", path_tmp="s3://tmp")
+        self.reader = athenareader.AthenaReader(database_tmp="temp_db", path_tmp="s3://tmp", workgroup='sandbox')
 
     def test_table_requires_database(self):
         with self.assertRaises(ValueError):

@@ -118,7 +118,7 @@ class DataFrame:
             response = athena.start_query_execution(
                 QueryString=query,
                 QueryExecutionContext={"Database": self.database},
-                WorkGroup="sandbox"
+                WorkGroup=self.reader._workgroup
             )
 
             query_execution_id = response["QueryExecutionId"]
@@ -936,7 +936,7 @@ class DataFrame:
                 path=temp_path,
                 database=self.database,
                 file_format="parquet",
-                workgroup="sandbox",  # personalizable
+                workgroup=self.reader._workgroup,  # personalizable
             )
 
             datos_escaneados = meta_data.raw_payload['Statistics']['DataScannedInBytes']

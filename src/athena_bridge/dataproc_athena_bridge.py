@@ -22,6 +22,32 @@ class _DPRead:
         if hasattr(self._reader, "_options"):
             self._reader._options = {}
 
+    def _coerce_bool(self, v: Any) -> Any:
+        # Si tu AthenaReader espera strings para booleanos
+        if isinstance(v, bool):
+            return "true" if v else "false"
+        return v
+
+    def _apply_options_to_reader(self):
+        """
+        Aplica opciones acumuladas a self._reader, normalizando nombres según formato.
+        - Para CSV mapeamos PySpark 'delimiter' -> 'sep'
+        """
+        for k, v in self._opts.items():
+            key = k
+            val = self._coerce_bool(v)
+
+            if (self._fmt or "").lower() == "csv":
+                lk = k.lower()
+                if lk == "delimiter":
+                    key = "sep"       # compat PySpark
+                elif lk == "sep":
+                    key = "sep"       # ya correcto
+                # (aquí podrías añadir más alias si tu reader los usa con otros nombres)
+                # p.ej.: quotechar->quote, escapechar->escape, inferSchema->infer_schema, etc.
+
+            self._reader.option(key, val)
+
     def option(self, key: str, value: Any):
         self._opts[key] = value
         # aplicamos al reader también (se hará un reset al ejecutar el load)
@@ -54,13 +80,15 @@ class _DPRead:
         self._reader.database(db)
         return self._reader.table(tbl)
 
+    def load(self, path: str):
+        return self._load(path)
+
     def _load(self, path: str):
         self._reset_reader_opts()
         if self._fmt:
             self._reader.format(self._fmt)
-        # aplicar options acumuladas a reader
-        for k, v in self._opts.items():
-            self._reader.option(k, v)
+        # aplicar options acumuladas normalizadas al reader
+        self._apply_options_to_reader()
         # delegar en tu reader real
         if hasattr(self._reader, "load"):
             return self._reader.load(path)
@@ -150,9 +178,9 @@ class DataprocAthenaBridge:
     (construido con database_tmp y path_tmp) y expone .exit() para limpiar
     temporales reutilizando el exit() del reader.
     """
-    def __init__(self, database_tmp: str, path_tmp: str):
+    def __init__(self, database_tmp: str, path_tmp: str, workgroup: str):
         # Instanciamos UNA sola vez tu AthenaReader con la config obligatoria
-        self._reader = AthenaReader(database_tmp=database_tmp, path_tmp=path_tmp)
+        self._reader = AthenaReader(database_tmp=database_tmp, path_tmp=path_tmp, workgroup=workgroup)
 
     def read(self) -> _DPRead:
         # Devolvemos un facade que usa SIEMPRE el mismo reader compartido

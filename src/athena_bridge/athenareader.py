@@ -10,12 +10,13 @@ class AthenaReader:
 
     # _TEMPORARY_TABLES = set()
 
-    def __init__(self, database_tmp: str, path_tmp: str):
+    def __init__(self, database_tmp: str, path_tmp: str, workgroup: str):
         self._format = "parquet"
         self._database = None
         self._options = {}
         self._database_tmp = database_tmp
         self._path_tmp = path_tmp
+        self._workgroup = workgroup
         self._temporary_tables = set()
         self._temporary_files = set()
         self._data_scanned = 0
@@ -39,6 +40,10 @@ class AthenaReader:
     @property
     def path_tmp(self):
         return self._path_tmp
+
+    @property
+    def workgroup(self):
+        return self._workgroup
 
     @property
     def data_scanned(self):
