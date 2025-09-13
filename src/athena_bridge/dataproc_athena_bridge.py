@@ -1,3 +1,6 @@
+# This code is based on code from Apache Spark under the license found in the LICENSE file located in the root folder.
+
+
 # dataproc_athena_bridge.py
 # -*- coding: utf-8 -*-
 from typing import Any, Dict, List

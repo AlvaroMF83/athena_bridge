@@ -1,3 +1,5 @@
+# This code is based on code from Apache Spark under the license found in the LICENSE file located in the root folder.
+
 # spark_compat.py
 # -*- coding: utf-8 -*-
 from __future__ import annotations
