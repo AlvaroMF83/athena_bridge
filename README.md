@@ -202,15 +202,6 @@ Each link includes direct references to the official PySpark documentation for e
 
 ---
 
-## 🧪 Full Example (Jupyter / SageMaker)
-
-Check out the notebook [`Ejemplo_finn_athena_bridge_usando_dataproc.ipynb`](./Ejemplo_finn_athena_bridge_usando_dataproc.ipynb) for a complete example, including:
-- how to connect using `boto3` and `awswrangler`,
-- how to create DataFrames from Athena results,
-- and how to combine `athena_bridge` with `pandas` seamlessly.
-
----
-
 ## 🔐 License
 
 This project is licensed under the **Apache License 2.0**.

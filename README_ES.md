@@ -168,6 +168,16 @@ Los resultados se ejecutan sobre Athena y se muestran directamente en el entorno
 
 ---
 
+## 📘 Ejemplos más detallados
+
+Puedes encontrar notebooks más completos en el directorio [`examples/`](./examples/):
+
+- [example_athena_bridge_using_dataproc_module.ipynb](./examples/example_athena_bridge_using_dataproc_module.ipynb) — Ejemplo de lectura y escritura usando el módulo **Dataproc**.  
+- [example_athena_bridge_using_spark_module.ipynb](./examples/example_athena_bridge_using_spark_module.ipynb) — Ejemplo de lectura y escritura usando el módulo **Spark**.  
+- [quickstart.ipynb](./examples/quickstart.ipynb) — Ejemplo básico de inicio rápido.
+
+---
+
 ## 🧰 Compatibilidad con PySpark
 
 La librería implementa una gran parte de las funciones nativas de PySpark.  
@@ -190,15 +200,6 @@ Cada enlace incluye referencias directas a la documentación oficial de PySpark 
 - Algunas funciones avanzadas (por ejemplo, `collect_set`, `rdd`, `pivot`) no están implementadas.
 - No se soportan operaciones que dependan de *stateful streaming* o *RDDs*.
 - El rendimiento depende de los límites y tiempos de ejecución de Athena.
-
----
-
-## 🧪 Ejemplo ampliado (desde Jupyter/SageMaker)
-
-Consulta el notebook [`Ejemplo_finn_athena_bridge_usando_dataproc.ipynb`](./Ejemplo_finn_athena_bridge_usando_dataproc.ipynb) para ver:
-- cómo conectarte con `boto3` y `awswrangler`,
-- crear DataFrames a partir de resultados de Athena,
-- y combinar funciones de `athena_bridge` con `pandas`.
 
 ---
 
